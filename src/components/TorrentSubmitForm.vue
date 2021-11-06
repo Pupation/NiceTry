@@ -22,9 +22,7 @@
 
                   <v-divider></v-divider>
 
-                  <v-stepper-step step="3">
-                    Result
-                  </v-stepper-step>
+                  <v-stepper-step step="3"> Result </v-stepper-step>
                 </v-stepper-header>
 
                 <v-stepper-items>
@@ -64,6 +62,7 @@
                       <template v-if="!uploaded">
                         <v-btn
                           color="primary"
+                          class="mx-4 my-1"
                           v-if="!uploaded"
                           @click="submitFile()"
                           :loading="uploading"
@@ -75,13 +74,20 @@
                       <template v-if="uploaded">
                         <v-btn
                           color="primary"
+                          class="mx-4 my-1"
+                          v-if="uploaded"
                           @click="e1 = 2"
                           :disabled="invalid || !validated"
                         >
                           Next
                         </v-btn>
                         <!-- TODO: Notify server delete file id and cache -->
-                        <v-btn color="error" @click="clearFile()">
+                        <v-btn
+                          color="error"
+                          class="mx-4 my-1"
+                          v-if="uploaded"
+                          @click="clearFile()"
+                        >
                           Clear
                         </v-btn>
                       </template>
@@ -158,25 +164,18 @@
                           rules="required"
                           class="px-4"
                         >
-                          <tiptap-vuetify
-                            slot-scope="{ errors, valid }"
-                            v-model="torrent.desc"
-                            :error-messages="errors"
-                            :success="valid"
-                            :extensions="extensions"
-                            label="Description"
-                          />
+                          <tiptap />
                         </ValidationProvider>
                       </v-form>
                       <v-btn
-                        class="mx-4"
+                        class="mx-4 my-1"
                         color="primary"
                         @click="submitTorrent()"
                       >
                         Submit
                       </v-btn>
 
-                      <v-btn text class="mx-4" @click="e1 = 1">
+                      <v-btn text class="mx-4 my-1" @click="e1 = 1">
                         Back
                       </v-btn>
                     </ValidationObserver>
@@ -187,13 +186,11 @@
                       {{ result }}
                     </v-card>
 
-                    <v-btn color="primary" class="mx-4" @click="e1 = 1">
+                    <v-btn color="primary" class="mx-4 my-1" @click="e1 = 1">
                       Continue
                     </v-btn>
 
-                    <v-btn text class="mx-4" @click="e1 = 2">
-                      Back
-                    </v-btn>
+                    <v-btn text class="mx-4 my-1" @click="e1 = 2"> Back </v-btn>
                   </v-stepper-content>
                 </v-stepper-items>
               </v-stepper>
@@ -231,24 +228,7 @@ import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 
 import { required, confirmed, mimes } from "vee-validate/dist/rules";
 
-import {
-  TiptapVuetify,
-  Heading,
-  Bold,
-  Italic,
-  Strike,
-  Underline,
-  Code,
-  Paragraph,
-  BulletList,
-  OrderedList,
-  ListItem,
-  Link,
-  Blockquote,
-  HardBreak,
-  HorizontalRule,
-  History,
-} from "tiptap-vuetify";
+import Tiptap from "./Tiptap.vue";
 
 import Torrent from "../models/torrent";
 
@@ -289,30 +269,6 @@ extend("required", {
 export default {
   data: () => ({
     e1: 1,
-    extensions: [
-      History,
-      Blockquote,
-      Link,
-      Underline,
-      Strike,
-      Italic,
-      ListItem,
-      BulletList,
-      OrderedList,
-      [
-        Heading,
-        {
-          options: {
-            levels: [1, 2, 3],
-          },
-        },
-      ],
-      Bold,
-      Code,
-      HorizontalRule,
-      Paragraph,
-      HardBreak,
-    ],
     torrent: new Torrent("", "", "", "", 0, "", ""),
     torrentfile: null,
     dialog: false,
@@ -329,7 +285,7 @@ export default {
   components: {
     ValidationProvider,
     ValidationObserver,
-    TiptapVuetify,
+    Tiptap,
   },
   methods: {
     async fillCategories() {
